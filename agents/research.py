@@ -4,6 +4,7 @@ from config import ANTHROPIC_API_KEY, RESEARCH_TOPICS
 from tools.search import web_search
 from tools.rss import fetch_rss_feeds
 from memory.state import save_research, get_recent_research
+from json_repair import repair_json
 
 client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
@@ -46,8 +47,8 @@ def run(topics: list[str] | None = None) -> dict:
     }
 
     response = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=1000,
+        model="claude-sonnet-4-6",
+        max_tokens=4096,
         system=SYSTEM_PROMPT,
         messages=[{
             "role": "user",
@@ -66,4 +67,11 @@ Data: {json.dumps(data_for_claude, ensure_ascii=False)}"""
 
     raw = response.content[0].text.strip()
     raw = raw.replace("```json", "").replace("```", "").strip()
-    return json.loads(raw)
+    # ořízni na poslední platný JSON
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        last_brace = raw.rfind("}")
+        if last_brace != -1:
+            raw = raw[:last_brace+1]
+        return json.loads(repair_json(raw))

@@ -12,7 +12,7 @@ CATEGORY_COLORS = {
 }
 
 
-def run(topics: list[str] | None = None, companies: list[str] | None = None) -> dict:
+def run(topics: list[str] | None = None, companies: list[str] | None = None, skip_competitor: bool = False) -> dict:
     run_id = str(uuid.uuid4())[:8]
     print(f"\n{'='*50}")
     print(f"[Orchestrator] Spouštím run {run_id} – {datetime.now().strftime('%H:%M:%S')}")
@@ -25,7 +25,7 @@ def run(topics: list[str] | None = None, companies: list[str] | None = None) -> 
         research_data = research.run(topics)
 
         print("\n[Orchestrator] Fáze 2: Competitor agent")
-        competitor_data = competitor.run(companies)
+        competitor_data = competitor.run(companies) if not skip_competitor else {"company_updates": [], "market_trends": [], "opportunities": []}
 
         print("\n[Orchestrator] Fáze 3: Synthesis agent")
         final_report = synthesis.run(research_data, competitor_data)

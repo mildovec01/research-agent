@@ -2,6 +2,7 @@ import anthropic
 import json
 from config import ANTHROPIC_API_KEY, COMPETITOR_COMPANIES
 from tools.search import search_company
+from json_repair import repair_json
 
 client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
@@ -21,8 +22,8 @@ def run(companies: list[str] | None = None) -> dict:
         company_data[company] = results
 
     response = client.messages.create(
-        model="claude-sonnet-4-20250514",
-        max_tokens=1000,
+        model="claude-sonnet-4-6",
+        max_tokens=4096,
         system=SYSTEM_PROMPT,
         messages=[{
             "role": "user",
@@ -47,4 +48,11 @@ Data: {json.dumps(company_data, ensure_ascii=False)}"""
 
     raw = response.content[0].text.strip()
     raw = raw.replace("```json", "").replace("```", "").strip()
-    return json.loads(raw)
+    # ořízni na poslední platný JSON
+    try:
+        return json.loads(raw)
+    except json.JSONDecodeError:
+        last_brace = raw.rfind("}")
+        if last_brace != -1:
+            raw = raw[:last_brace+1]
+        return json.loads(repair_json(raw))
