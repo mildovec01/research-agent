@@ -3,565 +3,492 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ResearchBot — Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<title>ResearchBot</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0a0a0c;
-    --surface: #111115;
-    --border: #1e1e26;
-    --accent: #00ff9d;
-    --accent2: #7b5ea7;
-    --accent3: #ff6b35;
-    --text: #e2e2e8;
-    --muted: #5a5a6e;
-    --green: #00ff9d;
-    --yellow: #ffd93d;
-    --red: #ff4757;
-  }
+:root {
+  --bg: #080810;
+  --s1: #0e0e1a;
+  --s2: #13131f;
+  --border: #1f1f30;
+  --border2: #2a2a3d;
+  --green: #22d98a;
+  --purple: #8b5cf6;
+  --orange: #f97316;
+  --blue: #38bdf8;
+  --yellow: #fbbf24;
+  --red: #f43f5e;
+  --text: #e2e2f0;
+  --muted: #52526e;
+  --muted2: #7070a0;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { font-size: 14px; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Space Grotesk', sans-serif;
+  min-height: 100vh;
+}
+code, .mono { font-family: 'DM Mono', monospace; }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
+/* HEADER */
+header {
+  height: 52px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: rgba(8,8,16,0.95);
+  backdrop-filter: blur(8px);
+}
+.logo {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.pulse {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--green);
+  box-shadow: 0 0 8px var(--green);
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { opacity:1; box-shadow: 0 0 8px var(--green); }
+  50% { opacity:0.4; box-shadow: 0 0 2px var(--green); }
+}
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 0.72rem;
+  color: var(--muted2);
+  font-family: 'DM Mono', monospace;
+}
+.live-badge {
+  color: var(--green);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 500;
+}
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'JetBrains Mono', monospace;
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
+/* LAYOUT */
+main {
+  padding: 1.25rem 1.5rem;
+  max-width: 1440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
-  /* grid noise texture */
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-      linear-gradient(rgba(0,255,157,0.02) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(0,255,157,0.02) 1px, transparent 1px);
-    background-size: 40px 40px;
-    pointer-events: none;
-    z-index: 0;
-  }
+/* STAT CARDS */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.75rem;
+}
+.stat {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  padding: 1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  position: relative;
+}
+.stat::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--c, var(--green));
+  opacity: 0.6;
+}
+.stat-label {
+  font-size: 0.65rem;
+  color: var(--muted2);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-weight: 500;
+}
+.stat-val {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--c, var(--green));
+  line-height: 1.1;
+  font-family: 'DM Mono', monospace;
+}
+.stat-sub {
+  font-size: 0.65rem;
+  color: var(--muted);
+}
 
-  header {
-    position: sticky;
-    top: 0;
-    z-index: 100;
-    background: rgba(10,10,12,0.9);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-    padding: 0 2rem;
-    height: 56px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
+/* GRID */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.grid-right {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
 
-  .logo {
-    font-family: 'Syne', sans-serif;
-    font-weight: 800;
-    font-size: 1.1rem;
-    letter-spacing: -0.02em;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
+/* PANEL */
+.panel {
+  background: var(--s1);
+  border: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+}
+.panel-head {
+  padding: 0.75rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.panel-title {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted2);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.panel-title .dot {
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--c, var(--green));
+}
+.panel-body {
+  padding: 1rem 1.25rem;
+  flex: 1;
+}
+.panel-body.no-pad { padding: 0; }
+.panel-body.scroll { overflow-y: auto; max-height: 340px; }
 
-  .logo-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--accent);
-    box-shadow: 0 0 12px var(--accent);
-    animation: pulse 2s ease-in-out infinite;
-  }
+/* CHART */
+.chart-wrap {
+  height: 140px;
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+}
+.bar-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  height: 100%;
+  justify-content: flex-end;
+  gap: 5px;
+}
+.bar {
+  width: 100%;
+  border-radius: 3px 3px 0 0;
+  transition: height 0.5s cubic-bezier(.34,1.56,.64,1);
+  cursor: default;
+  position: relative;
+}
+.bar:hover::before {
+  content: attr(data-tip);
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--s2);
+  border: 1px solid var(--border2);
+  padding: 2px 6px;
+  font-size: 0.6rem;
+  white-space: nowrap;
+  font-family: 'DM Mono', monospace;
+  color: var(--text);
+  pointer-events: none;
+  z-index: 10;
+}
+.bar-label {
+  font-size: 0.55rem;
+  color: var(--muted);
+  font-family: 'DM Mono', monospace;
+  transform: rotate(-40deg);
+  white-space: nowrap;
+}
 
-  @keyframes pulse {
-    0%, 100% { opacity: 1; box-shadow: 0 0 12px var(--accent); }
-    50% { opacity: 0.5; box-shadow: 0 0 4px var(--accent); }
-  }
+/* RUN LOG */
+.run-row {
+  display: grid;
+  grid-template-columns: 70px 80px 1fr 60px;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+  font-size: 0.68rem;
+}
+.run-row:last-child { border-bottom: none; }
+.run-id { font-family: 'DM Mono', monospace; color: var(--muted); }
+.badge {
+  padding: 2px 7px;
+  font-size: 0.58rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: 2px;
+  display: inline-block;
+}
+.badge-completed { background: rgba(34,217,138,0.12); color: var(--green); }
+.badge-started { background: rgba(251,191,36,0.12); color: var(--yellow); }
+.badge-failed { background: rgba(244,63,94,0.12); color: var(--red); }
+.run-summary { color: var(--muted2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 0.65rem; }
+.run-time { font-family: 'DM Mono', monospace; color: var(--muted); font-size: 0.62rem; text-align: right; }
 
-  .status-bar {
-    font-size: 0.7rem;
-    color: var(--muted);
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
+/* TIMELINE */
+.tl-item {
+  display: grid;
+  grid-template-columns: 46px 1fr;
+  gap: 1rem;
+  padding: 0.9rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.tl-item:last-child { border-bottom: none; }
+.tl-date {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--green);
+  font-weight: 500;
+  padding-top: 2px;
+}
+.tl-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: var(--text);
+}
+.tl-summary {
+  font-size: 0.65rem;
+  color: var(--muted2);
+  line-height: 1.55;
+  margin-bottom: 0.5rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.tag {
+  font-size: 0.58rem;
+  padding: 2px 7px;
+  border: 1px solid var(--border2);
+  color: var(--muted2);
+  border-radius: 2px;
+  white-space: nowrap;
+  max-width: 130px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
-  .status-live {
-    color: var(--accent);
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
+/* COMPETITORS */
+.comp-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.5rem;
+  padding: 1rem 1.25rem;
+}
+.comp-card {
+  border: 1px solid var(--border);
+  background: var(--s2);
+  padding: 0.8rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  transition: border-color 0.2s;
+}
+.comp-card:hover { border-color: var(--purple); }
+.comp-name { font-size: 0.78rem; font-weight: 600; }
+.comp-date { font-size: 0.6rem; color: var(--muted); font-family: 'DM Mono', monospace; }
+.comp-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-active { background: var(--green); box-shadow: 0 0 6px var(--green); }
+.dot-inactive { background: var(--muted); }
 
-  main {
-    position: relative;
-    z-index: 1;
-    padding: 2rem;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
+/* PROJECTS */
+.proj-row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.7rem 1.25rem;
+  border-bottom: 1px solid var(--border);
+}
+.proj-row:last-child { border-bottom: none; }
+.proj-name { font-size: 0.75rem; font-weight: 500; }
+.proj-mcu {
+  font-size: 0.6rem;
+  padding: 2px 6px;
+  border: 1px solid rgba(139,92,246,0.4);
+  color: var(--purple);
+  border-radius: 2px;
+  white-space: nowrap;
+  font-family: 'DM Mono', monospace;
+}
+.proj-price {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--green);
+  font-family: 'DM Mono', monospace;
+  white-space: nowrap;
+}
 
-  /* STAT CARDS */
-  .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 1.25rem 1.5rem;
-    position: relative;
-    overflow: hidden;
-    transition: border-color 0.2s;
-  }
-
-  .stat-card::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--accent-color, var(--accent));
-  }
-
-  .stat-card:hover { border-color: var(--accent); }
-
-  .stat-label {
-    font-size: 0.65rem;
-    color: var(--muted);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    margin-bottom: 0.5rem;
-  }
-
-  .stat-value {
-    font-family: 'Syne', sans-serif;
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: var(--accent-color, var(--accent));
-    line-height: 1;
-  }
-
-  .stat-sub {
-    font-size: 0.65rem;
-    color: var(--muted);
-    margin-top: 0.4rem;
-  }
-
-  /* MAIN GRID */
-  .main-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
-
-  .bottom-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1rem;
-  }
-
-  .panel {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    overflow: hidden;
-  }
-
-  .panel-header {
-    padding: 1rem 1.5rem;
-    border-bottom: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .panel-title {
-    font-family: 'Syne', sans-serif;
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--text);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-
-  .panel-title .icon { color: var(--accent); }
-
-  .panel-body { padding: 1.5rem; }
-
-  /* SCORE CHART */
-  .chart-container {
-    height: 160px;
-    display: flex;
-    align-items: flex-end;
-    gap: 6px;
-    padding-top: 1rem;
-  }
-
-  .chart-bar-wrap {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    height: 100%;
-    justify-content: flex-end;
-  }
-
-  .chart-bar {
-    width: 100%;
-    border-radius: 2px 2px 0 0;
-    transition: height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-    position: relative;
-    min-height: 4px;
-  }
-
-  .chart-bar:hover::after {
-    content: attr(data-val);
-    position: absolute;
-    top: -20px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.6rem;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    padding: 1px 4px;
-    white-space: nowrap;
-  }
-
-  .chart-date {
-    font-size: 0.55rem;
-    color: var(--muted);
-    transform: rotate(-45deg);
-    white-space: nowrap;
-    margin-top: 4px;
-  }
-
-  /* TIMELINE */
-  .timeline { display: flex; flex-direction: column; gap: 0; }
-
-  .timeline-item {
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    gap: 1rem;
-    padding: 1rem 0;
-    border-bottom: 1px solid var(--border);
-    position: relative;
-  }
-
-  .timeline-item:last-child { border-bottom: none; }
-
-  .timeline-date {
-    font-size: 0.65rem;
-    color: var(--accent);
-    font-weight: 600;
-    padding-top: 2px;
-  }
-
-  .timeline-content {}
-
-  .timeline-title {
-    font-size: 0.75rem;
-    font-weight: 600;
-    margin-bottom: 0.25rem;
-    color: var(--text);
-  }
-
-  .timeline-summary {
-    font-size: 0.65rem;
-    color: var(--muted);
-    line-height: 1.5;
-    margin-bottom: 0.4rem;
-  }
-
-  .timeline-trends {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px;
-  }
-
-  .tag {
-    font-size: 0.6rem;
-    padding: 2px 6px;
-    border: 1px solid var(--border);
-    color: var(--muted);
-    border-radius: 2px;
-  }
-
-  /* COMPETITOR CARDS */
-  .competitor-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 0.75rem;
-  }
-
-  .competitor-card {
-    border: 1px solid var(--border);
-    padding: 1rem;
-    position: relative;
-    transition: border-color 0.2s, background 0.2s;
-  }
-
-  .competitor-card:hover {
-    border-color: var(--accent2);
-    background: rgba(123,94,167,0.05);
-  }
-
-  .competitor-name {
-    font-family: 'Syne', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
-    margin-bottom: 0.25rem;
-  }
-
-  .competitor-meta {
-    font-size: 0.6rem;
-    color: var(--muted);
-  }
-
-  .competitor-badge {
-    position: absolute;
-    top: 0.75rem;
-    right: 0.75rem;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: var(--accent);
-  }
-
-  /* PROJECTS */
-  .projects-summary {
-    display: flex;
-    flex-direction: column;
-    gap: 0;
-  }
-
-  .project-row {
-    display: grid;
-    grid-template-columns: 1fr auto auto;
-    gap: 1rem;
-    align-items: center;
-    padding: 0.75rem 0;
-    border-bottom: 1px solid var(--border);
-    transition: background 0.15s;
-  }
-
-  .project-row:last-child { border-bottom: none; }
-  .project-row:hover { background: rgba(0,255,157,0.02); }
-
-  .project-name {
-    font-size: 0.75rem;
-    font-weight: 600;
-  }
-
-  .project-mcu {
-    font-size: 0.62rem;
-    color: var(--accent2);
-    padding: 2px 6px;
-    border: 1px solid var(--accent2);
-    border-radius: 2px;
-    white-space: nowrap;
-  }
-
-  .project-price {
-    font-size: 0.7rem;
-    color: var(--accent);
-    font-weight: 600;
-    white-space: nowrap;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 2rem;
-    color: var(--muted);
-    font-size: 0.75rem;
-  }
-
-  /* RUN LOG */
-  .run-list { display: flex; flex-direction: column; gap: 0; }
-
-  .run-item {
-    display: grid;
-    grid-template-columns: 60px auto 1fr;
-    gap: 0.75rem;
-    align-items: center;
-    padding: 0.6rem 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.65rem;
-  }
-
-  .run-item:last-child { border-bottom: none; }
-
-  .run-id { color: var(--muted); font-family: monospace; }
-
-  .run-status {
-    padding: 2px 6px;
-    border-radius: 2px;
-    font-size: 0.6rem;
-    font-weight: 600;
-    text-transform: uppercase;
-  }
-
-  .status-completed { background: rgba(0,255,157,0.1); color: var(--accent); }
-  .status-failed { background: rgba(255,71,87,0.1); color: var(--red); }
-  .status-started { background: rgba(255,217,61,0.1); color: var(--yellow); }
-
-  .run-summary { color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-
-  /* loading */
-  .loading {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--muted);
-    font-size: 0.7rem;
-    padding: 1rem 0;
-  }
-
-  .loading-dot {
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--accent);
-    animation: blink 1s ease-in-out infinite;
-  }
-
-  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
-  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
-
-  @keyframes blink {
-    0%, 100% { opacity: 0.2; }
-    50% { opacity: 1; }
-  }
-
-  @media (max-width: 900px) {
-    .stats-grid { grid-template-columns: 1fr 1fr; }
-    .main-grid, .bottom-grid { grid-template-columns: 1fr; }
-    .competitor-grid { grid-template-columns: 1fr; }
-  }
+/* EMPTY / LOADING */
+.empty {
+  padding: 1.5rem;
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.7rem;
+}
+.loader {
+  display: flex;
+  gap: 4px;
+  align-items: center;
+  padding: 1rem 1.25rem;
+}
+.loader span {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: var(--green);
+  animation: ldot 1s ease-in-out infinite;
+}
+.loader span:nth-child(2) { animation-delay:.15s; }
+.loader span:nth-child(3) { animation-delay:.3s; }
+@keyframes ldot { 0%,100%{opacity:.15} 50%{opacity:1} }
 </style>
 </head>
 <body>
 
 <header>
   <div class="logo">
-    <div class="logo-dot"></div>
-    RESEARCHBOT
+    <div class="pulse"></div>
+    ResearchBot
   </div>
-  <div class="status-bar">
-    <span class="status-live">
-      <div class="logo-dot" style="width:6px;height:6px;"></div>
-      LIVE
-    </span>
-    <span id="current-time">--:--:--</span>
+  <div class="header-right">
+    <span class="live-badge"><div class="pulse" style="width:5px;height:5px;"></div>LIVE</span>
+    <span id="clock">--:--:--</span>
     <span>RPi 5 · 24/7</span>
   </div>
 </header>
 
 <main>
 
-  <!-- STAT CARDS -->
-  <div class="stats-grid">
-    <div class="stat-card" style="--accent-color: var(--accent)">
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat" style="--c:var(--green)">
       <div class="stat-label">Dokončené runy</div>
-      <div class="stat-value" id="stat-runs">—</div>
+      <div class="stat-val" id="s-runs">—</div>
       <div class="stat-sub">celkem spuštěno</div>
     </div>
-    <div class="stat-card" style="--accent-color: var(--accent2)">
+    <div class="stat" style="--c:var(--purple)">
       <div class="stat-label">Sledovaná témata</div>
-      <div class="stat-value" id="stat-topics">—</div>
+      <div class="stat-val" id="s-topics">—</div>
       <div class="stat-sub">unikátních queries</div>
     </div>
-    <div class="stat-card" style="--accent-color: var(--accent3)">
+    <div class="stat" style="--c:var(--orange)">
       <div class="stat-label">Reporty</div>
-      <div class="stat-value" id="stat-reports">—</div>
+      <div class="stat-val" id="s-reports">—</div>
       <div class="stat-sub">markdown soubory</div>
     </div>
-    <div class="stat-card" style="--accent-color: var(--yellow)">
+    <div class="stat" style="--c:var(--blue)">
       <div class="stat-label">Poslední run</div>
-      <div class="stat-value" style="font-size:1rem;padding-top:0.5rem;" id="stat-last">—</div>
-      <div class="stat-sub">čas dokončení</div>
+      <div class="stat-val mono" style="font-size:1.1rem;padding-top:0.3rem" id="s-last">—</div>
+      <div class="stat-sub" id="s-last-date">—</div>
     </div>
   </div>
 
-  <!-- MAIN GRID -->
-  <div class="main-grid">
+  <!-- ROW 1: chart + run log -->
+  <div class="grid-2">
 
-    <!-- SCORE CHART -->
     <div class="panel">
-      <div class="panel-header">
-        <div class="panel-title"><span class="icon">▲</span> Relevance Score — posledních 14 dní</div>
+      <div class="panel-head">
+        <div class="panel-title" style="--c:var(--green)">
+          <div class="dot"></div>
+          Relevance Score — posledních 14 dní
+        </div>
       </div>
       <div class="panel-body">
-        <div class="chart-container" id="score-chart">
-          <div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
-        </div>
+        <div class="chart-wrap" id="chart"><div class="loader"><span></span><span></span><span></span></div></div>
       </div>
     </div>
 
-    <!-- RUN LOG -->
     <div class="panel">
-      <div class="panel-header">
-        <div class="panel-title"><span class="icon">◉</span> Run log</div>
-      </div>
-      <div class="panel-body" style="padding:0 1.5rem">
-        <div class="run-list" id="run-list">
-          <div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
+      <div class="panel-head">
+        <div class="panel-title" style="--c:var(--yellow)">
+          <div class="dot" style="background:var(--yellow)"></div>
+          Run Log
         </div>
+      </div>
+      <div class="panel-body no-pad scroll" id="run-log">
+        <div class="loader"><span></span><span></span><span></span></div>
       </div>
     </div>
 
   </div>
 
-  <!-- BOTTOM GRID -->
-  <div class="bottom-grid">
+  <!-- ROW 2: timeline + right column -->
+  <div class="grid-2">
 
-    <!-- TIMELINE -->
     <div class="panel">
-      <div class="panel-header">
-        <div class="panel-title"><span class="icon">≡</span> Timeline reportů</div>
-      </div>
-      <div class="panel-body" style="padding:0 1.5rem; max-height:400px; overflow-y:auto;">
-        <div class="timeline" id="timeline">
-          <div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
+      <div class="panel-head">
+        <div class="panel-title" style="--c:var(--blue)">
+          <div class="dot" style="background:var(--blue)"></div>
+          Timeline reportů
         </div>
+      </div>
+      <div class="panel-body no-pad scroll" id="timeline">
+        <div class="loader"><span></span><span></span><span></span></div>
       </div>
     </div>
 
-    <!-- RIGHT COLUMN -->
-    <div style="display:flex;flex-direction:column;gap:1rem;">
+    <div class="grid-right">
 
-      <!-- COMPETITORS -->
       <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title"><span class="icon">◈</span> Competitors</div>
-        </div>
-        <div class="panel-body">
-          <div class="competitor-grid" id="competitor-grid">
-            <div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
+        <div class="panel-head">
+          <div class="panel-title" style="--c:var(--purple)">
+            <div class="dot" style="background:var(--purple)"></div>
+            Competitors
           </div>
+        </div>
+        <div class="comp-grid" id="competitors">
+          <div class="loader"><span></span><span></span><span></span></div>
         </div>
       </div>
 
-      <!-- PROJECTS SUMMARY -->
       <div class="panel">
-        <div class="panel-header">
-          <div class="panel-title"><span class="icon">⬡</span> Projekty — přehled</div>
-        </div>
-        <div class="panel-body" style="padding:0 1.5rem; max-height:220px; overflow-y:auto;">
-          <div class="projects-summary" id="projects-list">
-            <div class="loading"><div class="loading-dot"></div><div class="loading-dot"></div><div class="loading-dot"></div></div>
+        <div class="panel-head">
+          <div class="panel-title" style="--c:var(--orange)">
+            <div class="dot" style="background:var(--orange)"></div>
+            Projekty — přehled
           </div>
+        </div>
+        <div class="panel-body no-pad scroll" style="max-height:200px" id="projects">
+          <div class="loader"><span></span><span></span><span></span></div>
         </div>
       </div>
 
@@ -571,153 +498,116 @@
 </main>
 
 <script>
-  // Clock
-  function updateClock() {
-    const now = new Date();
-    document.getElementById('current-time').textContent =
-      now.toLocaleTimeString('cs-CZ');
-  }
-  setInterval(updateClock, 1000);
-  updateClock();
+// Clock
+setInterval(() => {
+  document.getElementById('clock').textContent = new Date().toLocaleTimeString('cs-CZ');
+}, 1000);
 
-  // Fetch helpers
-  async function fetchJSON(url) {
-    const r = await fetch(url);
-    return r.json();
-  }
+async function api(url) {
+  const r = await fetch(url);
+  return r.json();
+}
 
-  // Stats
-  async function loadStats() {
-    try {
-      const d = await fetchJSON('/api/stats');
-      document.getElementById('stat-runs').textContent = d.total_runs;
-      document.getElementById('stat-topics').textContent = d.total_topics;
-      document.getElementById('stat-reports').textContent = d.total_reports;
-      document.getElementById('stat-last').textContent = d.last_run;
-    } catch(e) { console.error('stats', e); }
-  }
+// Stats
+async function loadStats() {
+  const d = await api('/api/stats');
+  document.getElementById('s-runs').textContent = d.total_runs ?? '—';
+  document.getElementById('s-topics').textContent = d.total_topics ?? '—';
+  document.getElementById('s-reports').textContent = d.total_reports ?? '—';
+  document.getElementById('s-last').textContent = d.last_run ?? '—';
+  document.getElementById('s-last-date').textContent = d.last_run_date ?? '—';
+}
 
-  // Score chart
-  async function loadScoreChart() {
-    try {
-      const data = await fetchJSON('/api/score_history');
-      const el = document.getElementById('score-chart');
-      if (!data.length) {
-        el.innerHTML = '<div class="empty-state">Žádná data</div>';
-        return;
-      }
-      const max = 10;
-      el.innerHTML = data.map(d => {
-        const pct = (d.score / max) * 100;
-        const color = d.score >= 7 ? 'var(--green)' : d.score >= 4 ? 'var(--yellow)' : 'var(--red)';
-        const shortDate = d.date.slice(5);
-        return `<div class="chart-bar-wrap">
-          <div class="chart-bar" style="height:${pct}%;background:${color};opacity:0.8;" data-val="${d.score}/10" title="${d.date}: ${d.score}/10"></div>
-          <div class="chart-date">${shortDate}</div>
-        </div>`;
-      }).join('');
-    } catch(e) { console.error('chart', e); }
-  }
+// Chart
+async function loadChart() {
+  const data = await api('/api/score_history');
+  const el = document.getElementById('chart');
+  if (!data.length) { el.innerHTML = '<div class="empty">Žádná data</div>'; return; }
+  const colors = { high: '#22d98a', mid: '#fbbf24', low: '#f43f5e' };
+  el.innerHTML = data.map(d => {
+    const pct = Math.max(4, (d.score / 10) * 100);
+    const c = d.score >= 7 ? colors.high : d.score >= 4 ? colors.mid : colors.low;
+    return `<div class="bar-col">
+      <div class="bar" style="height:${pct}%;background:${c};" data-tip="${d.date}: ${d.score}/10"></div>
+      <div class="bar-label">${d.date.slice(5)}</div>
+    </div>`;
+  }).join('');
+}
 
-  // Run log
-  async function loadRunLog() {
-    try {
-      const data = await fetchJSON('/api/runs');
-      const el = document.getElementById('run-list');
-      if (!data.length) {
-        el.innerHTML = '<div class="empty-state">Žádné záznamy</div>';
-        return;
-      }
-      el.innerHTML = data.slice(0,10).map(r => {
-        const statusClass = `status-${r.status}`;
-        const time = r.created_at.slice(11,16);
-        const date = r.created_at.slice(5,10);
-        return `<div class="run-item">
-          <span class="run-id">${r.run_id.slice(0,8)}</span>
-          <span class="run-status ${statusClass}">${r.status}</span>
-          <span class="run-summary" title="${r.summary || ''}">${date} ${time} — ${r.summary ? r.summary.slice(0,60)+'…' : 'no summary'}</span>
-        </div>`;
-      }).join('');
-    } catch(e) { console.error('runs', e); }
-  }
+// Run log
+async function loadRuns() {
+  const data = await api('/api/runs');
+  const el = document.getElementById('run-log');
+  if (!data.length) { el.innerHTML = '<div class="empty">Žádné záznamy</div>'; return; }
+  el.innerHTML = data.slice(0, 14).map(r => {
+    const time = r.created_at.slice(5, 16).replace('T', ' ');
+    const badge = `<span class="badge badge-${r.status}">${r.status}</span>`;
+    const summary = r.summary ? r.summary.slice(0, 55) + (r.summary.length > 55 ? '…' : '') : '—';
+    return `<div class="run-row">
+      <span class="run-id mono">${r.run_id.slice(0,8)}</span>
+      ${badge}
+      <span class="run-summary">${summary}</span>
+      <span class="run-time">${time}</span>
+    </div>`;
+  }).join('');
+}
 
-  // Timeline
-  async function loadTimeline() {
-    try {
-      const data = await fetchJSON('/api/timeline');
-      const el = document.getElementById('timeline');
-      if (!data.length) {
-        el.innerHTML = '<div class="empty-state">Žádné reporty</div>';
-        return;
-      }
-      el.innerHTML = data.map(r => {
-        const tags = (r.trends || []).map(t => `<span class="tag">${t.slice(0,30)}</span>`).join('');
-        return `<div class="timeline-item">
-          <div class="timeline-date">${r.date.slice(5)}</div>
-          <div class="timeline-content">
-            <div class="timeline-title">${r.title || r.date}</div>
-            <div class="timeline-summary">${r.summary || '—'}</div>
-            <div class="timeline-trends">${tags}</div>
-          </div>
-        </div>`;
-      }).join('');
-    } catch(e) { console.error('timeline', e); }
-  }
+// Timeline
+async function loadTimeline() {
+  const data = await api('/api/timeline');
+  const el = document.getElementById('timeline');
+  if (!data.length) { el.innerHTML = '<div class="empty">Žádné reporty</div>'; return; }
+  el.innerHTML = data.map(r => {
+    const tags = (r.trends || []).map(t => `<span class="tag">${t}</span>`).join('');
+    return `<div class="tl-item">
+      <div class="tl-date">${r.date.slice(5)}</div>
+      <div>
+        <div class="tl-title">${r.title}</div>
+        <div class="tl-summary">${r.summary || '—'}</div>
+        <div class="tags">${tags}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
 
-  // Competitors
-  async function loadCompetitors() {
-    try {
-      const data = await fetchJSON('/api/competitors');
-      const el = document.getElementById('competitor-grid');
-      if (!data.length) {
-        el.innerHTML = '<div class="empty-state" style="grid-column:span 2">Žádná data</div>';
-        return;
-      }
-      const companies = ['Boston Dynamics','ABB Robotics','KUKA','Fanuc','Universal Robots'];
-      const display = companies.map(name => {
-        const found = data.find(d => d.name.includes(name.split(' ')[0]));
-        return `<div class="competitor-card">
-          <div class="competitor-badge"></div>
-          <div class="competitor-name">${name}</div>
-          <div class="competitor-meta">Aktualizováno: ${found ? found.last_updated : '—'}</div>
-        </div>`;
-      });
-      el.innerHTML = display.join('');
-    } catch(e) { console.error('competitors', e); }
-  }
+// Competitors
+async function loadCompetitors() {
+  const data = await api('/api/competitors');
+  const el = document.getElementById('competitors');
+  if (!data.length) { el.innerHTML = '<div class="empty">Žádná data</div>'; return; }
+  el.innerHTML = data.map(c => {
+    const active = !!c.last_updated;
+    return `<div class="comp-card">
+      <div>
+        <div class="comp-name">${c.name}</div>
+        <div class="comp-date">${c.last_updated || 'Nemonitorováno'}</div>
+      </div>
+      <div class="comp-dot ${active ? 'dot-active' : 'dot-inactive'}"></div>
+    </div>`;
+  }).join('');
+}
 
-  // Projects
-  async function loadProjects() {
-    try {
-      const data = await fetchJSON('/api/projects');
-      const el = document.getElementById('projects-list');
-      if (!data.length) {
-        el.innerHTML = '<div class="empty-state">Žádné projekty. Zkus /project na Discordu!</div>';
-        return;
-      }
-      el.innerHTML = data.map(p => `<div class="project-row">
-        <div class="project-name">${p.name}</div>
-        <div class="project-mcu">${p.microcontroller}</div>
-        <div class="project-price">${p.total_price !== '?' ? p.total_price + ' Kč' : '—'}</div>
-      </div>`).join('');
-    } catch(e) { console.error('projects', e); }
+// Projects
+async function loadProjects() {
+  const data = await api('/api/projects');
+  const el = document.getElementById('projects');
+  if (!data.length) {
+    el.innerHTML = '<div class="empty">Zatím žádné projekty.<br>Zkus /project na Discordu!</div>';
+    return;
   }
+  el.innerHTML = data.map(p => `<div class="proj-row">
+    <div class="proj-name">${p.name}</div>
+    <div class="proj-mcu">${p.microcontroller}</div>
+    <div class="proj-price">${p.total_price !== '?' ? p.total_price + ' Kč' : '—'}</div>
+  </div>`).join('');
+}
 
-  // Load all
-  async function loadAll() {
-    await Promise.all([
-      loadStats(),
-      loadScoreChart(),
-      loadRunLog(),
-      loadTimeline(),
-      loadCompetitors(),
-      loadProjects(),
-    ]);
-  }
+async function loadAll() {
+  await Promise.all([loadStats(), loadChart(), loadRuns(), loadTimeline(), loadCompetitors(), loadProjects()]);
+}
 
-  loadAll();
-  // Auto-refresh every 60s
-  setInterval(loadAll, 60000);
+loadAll();
+setInterval(loadAll, 60000);
 </script>
 </body>
 </html>
