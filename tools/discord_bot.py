@@ -42,7 +42,7 @@ async def slash_research(interaction: discord.Interaction, topic: str):
 
     loop = asyncio.get_event_loop()
     from agents.orchestrator import run as orchestrator_run
-    result = await loop.run_in_executor(None, lambda: orchestrator_run(topics=[topic], skip_competitor=True))
+    result = await loop.run_in_executor(None, lambda: orchestrator_run(topics=[topic]))
 
     embeds = result.get("discord", [])
     discord_embeds = [discord.Embed.from_dict(e) for e in embeds]

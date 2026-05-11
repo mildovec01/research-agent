@@ -2,7 +2,6 @@ import anthropic
 import json
 from config import ANTHROPIC_API_KEY
 from tools.search import web_search
-from json_repair import repair_json
 
 client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
@@ -72,4 +71,4 @@ DŮLEŽITÉ pro kód:
 
     raw = response.content[0].text.strip()
     raw = raw.replace("```json", "").replace("```", "").strip()
-    return json.loads(repair_json(raw))
+    return json.loads(raw)

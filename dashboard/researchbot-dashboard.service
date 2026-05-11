@@ -1,0 +1,15 @@
+[Unit]
+Description=ResearchBot Web Dashboard
+After=network.target researchbot.service
+
+[Service]
+Type=simple
+User=milda03
+WorkingDirectory=/home/milda03/research-agent/research-agent
+ExecStart=/home/milda03/research-agent/research-agent/venv/bin/python dashboard/api.py
+Restart=always
+RestartSec=5
+Environment=PYTHONUNBUFFERED=1
+
+[Install]
+WantedBy=multi-user.target

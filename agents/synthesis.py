@@ -3,7 +3,6 @@ import json
 from datetime import datetime
 from pathlib import Path
 from config import ANTHROPIC_API_KEY
-from json_repair import repair_json
 
 client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
@@ -21,8 +20,8 @@ def run(research_data: dict, competitor_data: dict) -> dict:
     print("[Synthesis] Generuji souhrnný report...")
 
     response = client.messages.create(
-        model="claude-sonnet-4-6",
-        max_tokens=4096,
+        model="claude-sonnet-4-20250514",
+        max_tokens=1000,
         system=SYSTEM_PROMPT,
         messages=[{
             "role": "user",
@@ -45,13 +44,7 @@ Competitor data: {json.dumps(competitor_data, ensure_ascii=False)}"""
 
     raw = response.content[0].text.strip()
     raw = raw.replace("```json", "").replace("```", "").strip()
-    try:
-        result = json.loads(raw)
-    except json.JSONDecodeError:
-        last_brace = raw.rfind("}")
-        if last_brace != -1:
-            raw = raw[:last_brace+1]
-        result = json.loads(repair_json(raw))
+    result = json.loads(raw)
 
     save_markdown_report(result)
     return result

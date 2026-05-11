@@ -2,7 +2,6 @@ import anthropic
 import json
 from config import ANTHROPIC_API_KEY
 from tools.search import web_search
-from json_repair import repair_json
 
 client = anthropic.Anthropic(api_key=ANTHROPIC_API_KEY)
 
@@ -60,6 +59,6 @@ Reference cen z webu:
 
     raw = response.content[0].text.strip()
     raw = raw.replace("```json", "").replace("```", "").strip()
-    result = json.loads(repair_json(raw))
+    result = json.loads(raw)
     print(f"[Review] Hotovo — confidence score: {result.get('confidence_score', '?')}/10")
     return result
