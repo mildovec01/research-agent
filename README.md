@@ -4,8 +4,8 @@
 
 ### 1. Klonuj repo a nainstaluj závislosti
 ```bash
-git clone <tvuj-repo>
-cd research_agent
+git clone https://github.com/mildovec01/research-agent.git
+cd research-agent
 pip install -r requirements.txt
 ```
 
